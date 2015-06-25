@@ -1,0 +1,33 @@
+"*":
+  "exception-reporting":
+    userId: "b23c0183-a953-7414-872d-83456ad69011"
+  welcome:
+    showOnStartup: false
+  core:
+    disabledPackages: [
+      "wrap-guide"
+    ]
+    themes: [
+      "seti-ui"
+      "seti-syntax"
+    ]
+  editor:
+    invisibles: {}
+    showIndentGuide: true
+    fontSize: 15
+  react: {}
+  "language-babel":
+    transpileOnSave: false
+  "run-command": {}
+  "mocha-test-runner":
+    options: "--compilers coffee:coffee-script/register --require coffee-script/register --globals lw -t 100000"
+  "node-debugger":
+    nodePath: "/usr/local/bin/node"
+  minimap:
+    plugins:
+      "highlight-selected": true
+  pigments: {}
+  "highlight-selected": {}
+".js.jsx.source":
+  editor:
+    autoIndent: true
