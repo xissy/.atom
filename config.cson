@@ -29,6 +29,7 @@
   pigments: {}
   "highlight-selected": {}
   "autocomplete-plus": {}
+  "git-plus": {}
 ".js.jsx.source":
   editor:
     autoIndent: true
