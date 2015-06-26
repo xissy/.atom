@@ -9,7 +9,7 @@
     ]
     themes: [
       "seti-ui"
-      "seti-syntax"
+      "one-dark-syntax"
     ]
   editor:
     invisibles: {}
@@ -28,6 +28,7 @@
       "highlight-selected": true
   pigments: {}
   "highlight-selected": {}
+  "autocomplete-plus": {}
 ".js.jsx.source":
   editor:
     autoIndent: true
