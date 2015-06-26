@@ -1,7 +1,7 @@
 {
   "name": "autocomplete-modules",
   "main": "./src/main",
-  "version": "0.3.6",
+  "version": "1.0.0",
   "description": "Autocomplete for require/import statements",
   "keywords": [
     "javascript",
@@ -27,8 +27,8 @@
     "lodash.escaperegexp": "^3.0.0"
   },
   "devDependencies": {
-    "babel-eslint": "^3.0.1",
-    "eslint": "^0.20.0"
+    "babel-eslint": "^3.1.18",
+    "eslint": "^0.23.0"
   },
   "providedServices": {
     "autocomplete.provider": {
@@ -43,10 +43,10 @@
     "url": "https://github.com/nkt/atom-autocomplete-modules/issues"
   },
   "homepage": "https://github.com/nkt/atom-autocomplete-modules",
-  "_id": "autocomplete-modules@0.3.6",
-  "_shasum": "8aa1a7889924a7003b7d00c7d8b9fc3571295133",
-  "_resolved": "file:../d-115525-40298-k85zq3/package.tgz",
-  "_from": "../d-115525-40298-k85zq3/package.tgz",
+  "_id": "autocomplete-modules@1.0.0",
+  "_shasum": "1fbcaf0dc4f1aeccbe549b214784a79a980e63f2",
+  "_resolved": "file:../d-115526-43741-1cwheg7/package.tgz",
+  "_from": "../d-115526-43741-1cwheg7/package.tgz",
   "_atomModuleCache": {
     "version": 1,
     "dependencies": [
