@@ -20,7 +20,7 @@
     transpileOnSave: false
   "run-command": {}
   "mocha-test-runner":
-    options: "--compilers coffee:coffee-script/register --require coffee-script/register --globals lw -t 100000"
+    options: "--compilers es6:babel-core/register -t 10000"
   "node-debugger":
     nodePath: "/usr/local/bin/node"
   minimap:
@@ -30,6 +30,10 @@
   "highlight-selected": {}
   "autocomplete-plus": {}
   "git-plus": {}
+  jshint:
+    validateOnlyOnSave: true
+    supportLintingJsx: true
+  "markdown-preview": {}
 ".js.jsx.source":
   editor:
     autoIndent: true
