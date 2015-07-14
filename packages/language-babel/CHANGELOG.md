@@ -1,6 +1,23 @@
+### 0.10.2
+  - PR to add additional module options for Babel #22
+  - PR Removed label scope from "constant.other.object.key.js" grammar. #20
+  
+### 0.10.1
+  - Not checking for result.ignored flag correctly. fixes #21
+
+### 0.10.0
+  - Clear transpile error messages automatically on next save. closes #16
+
+### 0.9.1
+  - Bad deprecation code looses config settings
+
+### 0.9.0
+  - Added new flag `disableWhenNoBabelrcFileInPath` to stop transpiles in absence of `.babelrc` fixes #15
+  - Corrected misspelling of suppress - about time!
+
 ### 0.8.1
   - extend suppress message flag to include no output config'd messages
-  
+
 ### 0.8.0
   - Removed Internal Scanner
 

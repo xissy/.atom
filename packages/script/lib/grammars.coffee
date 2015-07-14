@@ -30,6 +30,10 @@ module.exports =
       "File Based":
         command: "bash"
         args: (context) -> ['-c', "xcrun clang -fcolor-diagnostics -Wall -include stdio.h '" + context.filepath + "' -o /tmp/c.out && /tmp/c.out"]
+    else if GrammarUtils.OperatingSystem.isLinux()
+      "File Based":
+        command: "bash"
+        args: (context) -> ["-c", "cc -Wall -include stdio.h '" + context.filepath + "' -o /tmp/c.out && /tmp/c.out"]
 
   'C++':
     if GrammarUtils.OperatingSystem.isDarwin()
@@ -133,7 +137,7 @@ module.exports =
       command: "bash"
       args: (context) ->
         className = context.filename.replace /\.java$/, ""
-        args = ['-c', "javac -d /tmp #{context.filepath} && java -cp /tmp #{className}"]
+        args = ['-c', "javac -d /tmp '#{context.filepath}' && java -cp /tmp #{className}"]
         return args
 
   JavaScript:
@@ -231,6 +235,21 @@ module.exports =
     "File Based":
       command:  "mongo"
       args: (context) -> [context.filepath]
+
+  NCL:
+    "Selection Based":
+      command: "ncl"
+      args: (context) ->
+        code = context.getCode(true)
+        code = code + """
+
+        exit"""
+        tmpFile = GrammarUtils.createTempFileWithCode(code)
+        [tmpFile]
+    "File Based":
+      command: "ncl"
+      args: (context) -> [context.filepath]
+
 
   newLISP:
     "Selection Based":

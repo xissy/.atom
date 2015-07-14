@@ -1,5 +1,6 @@
 {BufferedProcess, Emitter, CompositeDisposable} = require 'atom'
 path = require 'path'
+pty = require 'pty.js'
 
 module.exports =
 class CommandRunner
@@ -8,17 +9,16 @@ class CommandRunner
     @emitter = new Emitter()
 
   spawnProcess: (command) ->
-    @process = new BufferedProcess
-      command: atom.config.get('run-command.shellCommand') || '/bin/bash'
-      args: ['-c', command]
-      options:
-        cwd: @constructor.workingDirectory()
-      stdout: (data) =>
-        @emitter.emit('stdout', data)
-      stderr: (data) =>
-        @emitter.emit('stderr', data)
-      exit: (code) =>
-        @emitter.emit('exit', code)
+    shell = atom.config.get('run-command.shellCommadn') || '/bin/bash'
+    @term = pty.spawn shell, ['-c', command],
+      name: 'xterm-color'
+      cwd: @constructor.workingDirectory()
+      env: process.env
+
+    @term.on 'data', (data) =>
+      @emitter.emit('data', data)
+    @term.on 'exit', =>
+      @emitter.emit('exit')
 
   @homeDirectory: ->
     process.env['HOME'] || process.env['USERPROFILE'] || '/'
@@ -34,10 +34,8 @@ class CommandRunner
 
   onCommand: (handler) ->
     @emitter.on 'command', handler
-  onStdout: (handler) ->
-    @emitter.on 'stdout', handler
-  onStderr: (handler) ->
-    @emitter.on 'stderr', handler
+  onData: (handler) ->
+    @emitter.on 'data', handler
   onExit: (handler) ->
     @emitter.on 'exit', handler
   onKill: (handler) ->
@@ -49,22 +47,16 @@ class CommandRunner
       @emitter.emit('command', command)
 
       result =
-        stdout: ''
-        stderr: ''
         output: ''
-        status: null
+        exited: false
         signal: null
 
       @spawnProcess(command)
 
-      @subscriptions.add @onStdout (data) =>
-        result.stdout += data
+      @subscriptions.add @onData (data) =>
         result.output += data
-      @subscriptions.add @onStderr (data) =>
-        result.stderr += data
-        result.output += data
-      @subscriptions.add @onExit (code) =>
-        result.status = code
+      @subscriptions.add @onExit =>
+        result.exited = true
         resolve(result)
       @subscriptions.add @onKill (signal) =>
         result.signal = signal
@@ -73,10 +65,11 @@ class CommandRunner
   kill: (signal) ->
     signal ||= 'SIGTERM'
 
-    if @process?
+    if @term?
       @emitter.emit('kill', signal)
-      @process.kill(signal)
-      @process = null
+      process.kill(@term.pid, signal)
+      @term.destroy()
+      @term = null
 
       @subscriptions.dispose()
       @subscriptions.clear()

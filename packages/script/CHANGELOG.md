@@ -1,3 +1,16 @@
+## 2.26.3
+* Support for NCL
+
+## 2.26.2
+* Escape strings for javac
+
+## 2.26.1
+* Support for C based runner on Linux
+
+## 2.26.0
+* Make height of atom script view dynamic
+* No one reads these. If they did, they might have commented on this line.
+
 ## 2.25.3
 * Fix C/C++ grammar to allow symbols and spaces in path
 

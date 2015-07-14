@@ -1,4 +1,5 @@
 {Editor} = require 'atom'
+{$} = require 'atom-space-pen-views'
 CommandRunner = require '../lib/command-runner'
 CommandOutputView = require '../lib/command-output-view'
 
@@ -30,17 +31,15 @@ describe "CommandOutputView", ->
       expect(view.header.text()).toEqual('echo "foo"')
 
     it "displays the command's output", ->
-      [stdoutHandler, stderrHandler] = [null, null]
+      dataHandler = null
 
-      spyOn(@runner, 'onStdout').andCallFake (handler) ->
-        stdoutHandler = handler
-      spyOn(@runner, 'onStderr').andCallFake (handler) ->
-        stderrHandler = handler
+      spyOn(@runner, 'onData').andCallFake (handler) ->
+        dataHandler = handler
 
       view = new CommandOutputView(@runner)
 
-      stdoutHandler('foo\n')
-      stderrHandler('bar\n')
+      dataHandler('foo\n')
+      dataHandler('bar\n')
 
       expect(view.output.text()).toEqual('foo\nbar\n')
 
@@ -52,9 +51,9 @@ describe "CommandOutputView", ->
 
       view = new CommandOutputView(@runner)
 
-      exitHandler(4)
+      exitHandler()
 
-      expect(view.output.text()).toMatch(/(.*)code(.*)4/)
+      expect(view.output.text()).toMatch(/^\s*Command exited\s*$/)
 
     it "displays the last command's kill signal", ->
       killHandler = null
@@ -69,21 +68,21 @@ describe "CommandOutputView", ->
       expect(view.output.text()).toMatch(/SIGKILL/)
 
     it "clears the last command's output", ->
-      [commandHandler, stdoutHandler, stderrHandler] = [null, null, null]
+      [commandHandler, dataHandler] = [null, null]
 
       spyOn(@runner, 'onCommand').andCallFake (handler) ->
         commandHandler = handler
-      spyOn(@runner, 'onStdout').andCallFake (handler) ->
-        stdoutHandler = handler
+      spyOn(@runner, 'onData').andCallFake (handler) ->
+        dataHandler = handler
 
       view = new CommandOutputView(@runner)
 
       commandHandler('echo "foo"; echo "bar"')
-      stdoutHandler('foo\nbar\n')
+      dataHandler('foo\nbar\n')
       expect(view.output.text()).toEqual('foo\nbar\n')
 
       commandHandler('echo "baz"')
-      stdoutHandler('baz\n')
+      dataHandler('baz\n')
       expect(view.output.text()).toEqual('baz\n')
 
   describe "displaying a command's output", ->
@@ -104,3 +103,19 @@ describe "CommandOutputView", ->
 
       view.addOutput('foo')
       expect(view.scrollToBottomOfOutput).not.toHaveBeenCalled()
+
+    it "colorizes the command's output", ->
+      dataHandler = null
+
+      spyOn(@runner, 'onData').andCallFake (handler) ->
+        dataHandler = handler
+
+      view = new CommandOutputView(@runner)
+
+      dataHandler('\x1B[31mHello, \x1B[40mwro\x1B[;;;ml\x1B[md\x1B[0m!\n')
+
+      expect(view.output.text()).toEqual('Hello, wrold!\n')
+      expect($('.ansi-fg-red', view.output).text()).toEqual('Hello, wro')
+      expect($('.ansi-bg-black', view.output).text()).toEqual('wro')
+      expect($('.ansi-fg-default.ansi-bg-default', view.output).text())
+        .toEqual('ld!\n')

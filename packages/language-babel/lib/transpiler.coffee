@@ -4,6 +4,7 @@ pathIsInside = require 'path-is-inside'
 
 class Transpiler
   constructor: ->
+    @transpileErrorNotifications = {}
     @deprecateConfig()
 
   # transpile sourceFile edited by the optional textEditor
@@ -13,34 +14,45 @@ class Transpiler
 
     pathTo = @getPaths(sourceFile, config)
 
+    if config.disableWhenNoBabelrcFileInPath
+      if not @isBabelrcInPath pathTo.sourceFileDir, path.parse(pathTo.sourceFileDir).root
+        return
+
     if not pathIsInside(pathTo.sourceFile, pathTo.sourceRoot)
-      if not config.supressSourcePathMessages
+      if not config.suppressSourcePathMessages
         atom.notifications.addWarning 'Babel file is not inside the "Babel Source Path" directory.',
           dismissable: false
           detail: "No transpiled code output for file \n#{pathTo.sourceFile}
-            \n\nTo supress these 'invalid source path'
+            \n\nTo suppress these 'invalid source path'
             messages use language-babel package settings"
       return
 
     babelOptions = @getBabelOptions(config, pathTo)
 
+    # remove previous transpile error notifications for this source file
+    if @transpileErrorNotifications[pathTo.sourceFile]?
+      @transpileErrorNotifications[pathTo.sourceFile].dismiss()
+      delete @transpileErrorNotifications[pathTo.sourceFile]
     # babel-core seems to add a lot of time to atom loading so delay until needed
     @babel ?= require('../node_modules/babel-core')
     @babel.transformFile pathTo.sourceFile, babelOptions, (err,result) =>
+      # result.ignored is returned when .babelrc ignore/only flags are used
+      if result?.ignored? and result.ignored is true then return
       if err
-        notification = atom.notifications.addError "Babel v#{@babel.version} Transpiler Error",
+        notification =atom.notifications.addError "Babel v#{@babel.version} Transpiler Error",
           dismissable: true
           detail: err.message
+        @transpileErrorNotifications[pathTo.sourceFile] = notification
         # if we have a line/col syntax error jump to the position
         if err.loc? and textEditor?
           textEditor.setCursorBufferPosition [err.loc.line-1, err.loc.column-1]
       else
-        if not config.supressTranspileOnSaveMessages
-          notification = atom.notifications.addInfo "Babel v#{@babel.version} Transpiler Success",
+        if not config.suppressTranspileOnSaveMessages
+          atom.notifications.addInfo "Babel v#{@babel.version} Transpiler Success",
             detail: pathTo.sourceFile
 
         if not config.createTranspiledCode
-          if not config.supressTranspileOnSaveMessages
+          if not config.suppressTranspileOnSaveMessages
             atom.notifications.addInfo 'No transpiled output configured'
           return
         if pathTo.sourceFile is pathTo.transpiledFile
@@ -54,13 +66,13 @@ class Transpiler
           fs.makeTreeSync( path.parse( pathTo.transpiledFile).dir)
 
         # add source map url to code if file isn't ignored
-        if config.babelMapsAddUrl and not result.ignored
+        if config.babelMapsAddUrl
           result.code = result.code + '\n' + '//# sourceMappingURL='+pathTo.mapFile
 
         fs.writeFileSync pathTo.transpiledFile, result.code
 
         # write source map asked to and not ignored
-        if config.createMap and not result.ignored
+        if config.createMap
           if config.createTargetDirectories
             fs.makeTreeSync(path.parse(pathTo.mapFile).dir)
           mapJson =
@@ -76,6 +88,14 @@ class Transpiler
 
   # modifies config options for changed or deprecated configs
   deprecateConfig: ->
+    if atom.config.get('language-babel.supressTranspileOnSaveMessages')?
+      atom.config.set 'language-babel.suppressTranspileOnSaveMessages',
+        atom.config.get('language-babel.supressTranspileOnSaveMessages')
+    if atom.config.get('language-babel.supressSourcePathMessages')?
+      atom.config.set 'language-babel.suppressSourcePathMessages',
+        atom.config.get('language-babel.supressSourcePathMessages')
+    atom.config.unset('language-babel.supressTranspileOnSaveMessages')
+    atom.config.unset('language-babel.supressSourcePathMessages')
     atom.config.unset('language-babel.useInternalScanner')
     atom.config.unset('language-babel.stopAtProjectDirectory')
 
@@ -96,6 +116,17 @@ class Transpiler
     if config.whitelistTransformers.length > 0
       babelOptions.whitelist = config.whitelistTransformers
     return babelOptions
+
+# check for prescence of a .babelrc file path fromDir toDir
+  isBabelrcInPath: (fromDir, toDir) ->
+    # enviromnents used in babelrc
+    babelrc = '.babelrc'
+    babelrcFile = path.join fromDir, babelrc
+    if fs.existsSync babelrcFile
+      return true
+    if fromDir isnt toDir
+      return @isBabelrcInPath path.dirname(fromDir), toDir
+    else return false
 
   # get configuration for language-babel
   getConfig: -> atom.config.get('language-babel')

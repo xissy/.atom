@@ -34,7 +34,7 @@ See the sections *"Use Cases"* and *"Package Settings"* for more information on 
   If you wish to use language-babel to generate output code and no `path` options are set then transpiled/maps output will be directed to the same directory within the project. If you are using `.js` names for your source Babel files you will need to configure your `paths` to point to your source file directory tree are as well as the directory tree for the transpiled and maps output. If you do not do this then the transpiler output will attempt to overwrite the source file. This eventuality is trapped by language-babel to save embarrassment. See other settings to configure output options.
 
 * ####Mixed Javascript and Babel EcmaScript 2015 environment.
-   Keep pure `.js`  files in a separate directory tree from your Babel ES2015 files and/or use `.babelrc ignore`/`.babelrc only` flags.  Configure `Babel Source Paths` to point to the ES2015 file directory tree and the other `paths` to where output should be generated. Turn on `Supress Source Path Messages` and then configure other settings as described in the Pure EcmaScript environment above.
+   Keep pure `.js`  files in a separate directory tree from your Babel ES2015 files and/or use `.babelrc ignore`/`.babelrc only` flags.  Configure `Babel Source Paths` to point to the ES2015 file directory tree and the other `paths` to where output should be generated. Turn on `Suppress Source Path Messages` and then configure other settings as described in the Pure EcmaScript environment above. Optionally, you can turn on the `Disable When No Babelrc File In Path` option, which disables transpiles if no `.babelrc` files are found in the source file path.
 
 ##Package Settings
 
@@ -42,8 +42,11 @@ By using the ATOM settings panel for language-babel you can control many of the 
 
 * ####Transpile On Save
   On any file save of a language-babel enabled file the Babel transpiler  is called. Any errors and/or successful indications are notified by a ATOM pop-up.
+  
+* ####Disable When No Babelrc File In Path
+  Disables transpiler if no `.babelrc` files are found in the source file path.
 
-* ####Supress Transpile On Save Messages
+* ####Suppress Transpile On Save Messages
   Suppress all successful save messages. Errors are still notified.
 
 * ####Create Transpiled Code
@@ -52,7 +55,7 @@ By using the ATOM settings panel for language-babel you can control many of the 
 * ####Create Map
   A source map can be generated as required. The source file name will be used with a new suffix of `.js.map`. To avoid any possible XSSI issues the map file is prefixed with `)]}`
 
-  If `.babelrc` files use `sourceMaps: inline` or `sourceMaps both` options then either turn this option off.
+  If `.babelrc` files use `sourceMaps: inline` or `sourceMaps both` options then turn this option off.
 
 * ####Babel Maps Add Url
   If a source map is created this allows a Url reference `//# sourceURL=originalBabelSourcefile` to be appended to the generated Javascript file.  
@@ -70,7 +73,7 @@ By using the ATOM settings panel for language-babel you can control many of the 
 
   `/proj2/babelSource/dirBar/foo.es6` -> `/proj2/babelTranspile/dirBar/foo.js`,`/proj2/babelMaps/dirBar/foo.js.map`
 
-* ####Supress Source Path Messages
+* ####Suppress Source Path Messages
   By default when a file is saved that is outside the `Babel Source Path` directory a message is generated. Enabling this disables these messages. This is particularly useful when you have mixed ES2015 and ES3-5 environment. ES2015 files can be placed inside a `Babel Source Path` where they will be transpiled and other files will not pop up annoying messages when being saved.
 
 * ####Create Target Directories

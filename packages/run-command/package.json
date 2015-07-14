@@ -1,7 +1,7 @@
 {
   "name": "run-command",
   "main": "./lib/main",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Run any Unix command.",
   "keywords": [
     "command",
@@ -33,14 +33,15 @@
     "atom": ">=0.174.0 <2.0.0"
   },
   "dependencies": {
-    "atom-space-pen-views": "^2.0.3"
+    "atom-space-pen-views": "^2.0.3",
+    "pty.js": "https://github.com/chjj/pty.js/archive/master.tar.gz"
   },
-  "readme": "# \"Run Command\" for Atom\n\nExecute any arbitrary command in [Atom](http://atom.io). Originally derived from Phil Nash's [Ruby Quick Test](https://github.com/philnash/ruby-quick-test).\n\n# Usage\n`ctrl-r` to open up this:\n\n!['Run Command' dialog](https://raw.githubusercontent.com/kylewlacy/run-command/master/screenshots/run-command.gif)\n\nEnter a command, `enter` to run it:\n\n![Running `rspec spec`](https://raw.githubusercontent.com/kylewlacy/run-command/master/screenshots/run.gif)\n\n`ctrl-r`, `enter`, and run it again:\n\n![Re-running `rspec spec`](https://raw.githubusercontent.com/kylewlacy/run-command/master/screenshots/re-run.gif)\n\nPut it all together, and you can do this:\n\n![I'm available for freelance work!](https://raw.githubusercontent.com/kylewlacy/run-command/master/screenshots/tdd.gif)\n\n(You can also toggle the command output with `cmd-ctrl-x`, or kill the last command with `cmd-ctrl-alt-x`)\n\n# TODO\n- [ ] Show/edit the working directory\n- [ ] ANSI color codes\n- [ ] Resizable output\n- [ ] Editor variables (`$ATOM_PROJECT` for the current project directory, etc.)\n",
+  "readme": "# \"Run Command\" for Atom\n\nExecute any arbitrary command in [Atom](http://atom.io). Originally derived from Phil Nash's [Ruby Quick Test](https://github.com/philnash/ruby-quick-test).\n\n# Usage\n`ctrl-r` to open up this:\n\n!['Run Command' dialog](https://raw.githubusercontent.com/kylewlacy/run-command/master/screenshots/run-command.gif)\n\nEnter a command, `enter` to run it:\n\n![Running `rspec spec`](https://raw.githubusercontent.com/kylewlacy/run-command/master/screenshots/run.gif)\n\n`ctrl-r`, `enter`, and run it again:\n\n![Re-running `rspec spec`](https://raw.githubusercontent.com/kylewlacy/run-command/master/screenshots/re-run.gif)\n\nPut it all together, and you can do this:\n\n![I'm available for freelance work!](https://raw.githubusercontent.com/kylewlacy/run-command/master/screenshots/tdd.gif)\n\n(You can also toggle the command output with `cmd-ctrl-x`, or kill the last command with `cmd-ctrl-alt-x`)\n\n# TODO\n- [ ] Show/edit the working directory\n- [x] ~~ANSI color codes~~\n- [ ] Resizable output\n- [ ] Editor variables (`$ATOM_PROJECT` for the current project directory, etc.)\n",
   "readmeFilename": "README.md",
-  "_id": "run-command@0.2.0",
-  "_shasum": "6444672f9efd82b50ad5850a91be32a1d42ce911",
-  "_resolved": "file:../d-115522-27088-1wfs44f/package.tgz",
-  "_from": "../d-115522-27088-1wfs44f/package.tgz",
+  "_id": "run-command@0.3.0",
+  "_shasum": "5b6fbcd95044c94eddfa96928e6c4fd682b3a30d",
+  "_resolved": "file:../d-11562-2612-1x06zvo/package.tgz",
+  "_from": "../d-11562-2612-1x06zvo/package.tgz",
   "_atomModuleCache": {
     "version": 1,
     "dependencies": [
@@ -163,6 +164,21 @@
         "name": "underscore",
         "version": "1.6.0",
         "path": "node_modules/atom-space-pen-views/node_modules/space-pen/node_modules/underscore-plus/node_modules/underscore/underscore.js"
+      },
+      {
+        "name": "pty.js",
+        "version": "0.2.7-1",
+        "path": "node_modules/pty.js/index.js"
+      },
+      {
+        "name": "extend",
+        "version": "1.2.1",
+        "path": "node_modules/pty.js/node_modules/extend/index.js"
+      },
+      {
+        "name": "nan",
+        "version": "1.8.4",
+        "path": "node_modules/pty.js/node_modules/nan/include_dirs.js"
       }
     ],
     "extensions": {
@@ -725,7 +741,12 @@
         "node_modules/atom-space-pen-views/node_modules/space-pen/node_modules/jquery/src/wrap.js",
         "node_modules/atom-space-pen-views/node_modules/space-pen/node_modules/underscore-plus/lib/underscore-plus.js",
         "node_modules/atom-space-pen-views/node_modules/space-pen/node_modules/underscore-plus/node_modules/underscore/underscore-min.js",
-        "node_modules/atom-space-pen-views/node_modules/space-pen/node_modules/underscore-plus/node_modules/underscore/underscore.js"
+        "node_modules/atom-space-pen-views/node_modules/space-pen/node_modules/underscore-plus/node_modules/underscore/underscore.js",
+        "node_modules/pty.js/index.js",
+        "node_modules/pty.js/lib/pty.js",
+        "node_modules/pty.js/lib/pty_win.js",
+        "node_modules/pty.js/node_modules/extend/index.js",
+        "node_modules/pty.js/node_modules/nan/include_dirs.js"
       ],
       ".json": [
         "node_modules/atom-space-pen-views/node_modules/fuzzaldrin/package.json",
@@ -755,7 +776,13 @@
         "node_modules/atom-space-pen-views/node_modules/space-pen/node_modules/underscore-plus/package.json",
         "node_modules/atom-space-pen-views/node_modules/space-pen/package.json",
         "node_modules/atom-space-pen-views/package.json",
+        "node_modules/pty.js/node_modules/extend/package.json",
+        "node_modules/pty.js/node_modules/nan/package.json",
+        "node_modules/pty.js/package.json",
         "package.json"
+      ],
+      ".node": [
+        "node_modules/pty.js/build/Release/pty.node"
       ]
     },
     "folders": [
@@ -1077,6 +1104,19 @@
         ],
         "dependencies": {
           "underscore": "~1.6.0"
+        }
+      },
+      {
+        "paths": [
+          "node_modules/pty.js/build/Release",
+          "node_modules/pty.js",
+          "node_modules/pty.js/lib",
+          "node_modules/pty.js/test/children",
+          "node_modules/pty.js/test"
+        ],
+        "dependencies": {
+          "extend": "~1.2.1",
+          "nan": "^1.8.4"
         }
       }
     ]
